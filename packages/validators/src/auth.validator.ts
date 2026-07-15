@@ -49,7 +49,8 @@ export const forgotPassword = z.object({
 });
 
 export const resetPassword = z.object({
-    token: z.string().min(1, "token is required"),
+    email: z.email(),
+    otp : z.string().min(5, "otp is required"),
     password: passwordField,
     confirmPassword: z.string()
 }).refine((data) => data.password === data.confirmPassword, {
