@@ -283,7 +283,7 @@ model User {
   id                  Int                  @id @default(autoincrement())
   username            String               @unique @db.VarChar(255)
   email               String               @unique @db.VarChar(255)
-  password            String               @db.VarChar(255)
+  password            String?               @db.VarChar(255)
   googleId            String?              @unique @map("google_id") @db.VarChar(128)
   profilePicture      String?              @map("profile_picture") @db.VarChar(255)
   phoneNumber         String?              @map("phone_number") @db.VarChar(20)

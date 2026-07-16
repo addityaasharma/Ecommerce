@@ -1,4 +1,4 @@
-import type { ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "@repo/validators"
+import type { ForgotPasswordInput, GoogleInput, LoginInput, RegisterInput, ResetPasswordInput } from "@repo/validators"
 import bcrypt from "bcrypt";
 import { prisma } from "@repo/db";
 import { AppError } from "../../common/error/appError.js";
@@ -6,6 +6,9 @@ import { generateOTP, OTP_EXPIRE } from "../../common/helper/otpFunction.js";
 import { redis } from "../../config/redis.js";
 import jwt from 'jsonwebtoken';
 import { ACCESS_SECRET, REFRESH_SECRET } from "../../common/constants/tokens.js";
+import { verifyGoogleToken } from "../../common/helper/googleVerify.js";
+import { access, appendFile, link } from "node:fs";
+import { generateAccessToken, generateRefreshToken } from "../../common/helper/token.js";
 
 export const registerUserService = async (input: RegisterInput) => {
     const existing = await prisma.user.findFirst({
@@ -30,14 +33,45 @@ export const registerUserService = async (input: RegisterInput) => {
 }
 
 
+export const registerUserByGoogleService = async (input: GoogleInput) => {
+    const { googleId, username, email, profileURL } = await verifyGoogleToken(input.googleId);
+    const existing_user = await prisma.user.findFirst({
+        where: {
+            OR: [{ googleId, email }]
+        }
+    })
+
+    if (existing_user) {
+        if (!existing_user.googleId) {
+            const linked = await prisma.user.update({
+                where: { id: existing_user.id },
+                data: { googleId }
+            });
+            const { password, ...safeUser } = linked;
+            const access_token = generateAccessToken(linked.id);
+            const refresh_token = generateRefreshToken(linked.id);
+            return { user: safeUser, token: { access: access_token, refresh: refresh_token } }
+        } throw new AppError("User already exists", 409)
+    }
+
+    const new_user = await prisma.user.create({
+        data: { googleId, email, username, profilePicture: profileURL, password: null, role: "user" },
+    });
+
+    const { password, ...safeUser } = new_user;
+    const access_token = generateAccessToken(new_user.id);
+    const refresh_token = generateRefreshToken(new_user.id);
+    return { user: safeUser, token: { access: access_token, refresh: refresh_token } };
+}
+
 export const userLoginService = async (input: LoginInput) => {
     const user = await prisma.user.findFirst({
         where: {
             OR: [{ email: input.identifier }, { username: input.identifier }]
         }
     })
-    if (!user) {
-        throw new AppError("User not found", 404)
+    if (!user || !user.password) {
+        throw new AppError("username or password is wrong", 404)
     }
 
     const checkPassword = await bcrypt.compare(input.password, user.password)

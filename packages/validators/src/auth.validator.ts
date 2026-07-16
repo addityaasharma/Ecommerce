@@ -39,9 +39,6 @@ export const loginSchema = z.object({
 
 export const googleAuth = z.object({
     googleId: z.string().min(1, "Google ID is required"),
-    email: emailField,
-    username: usernameField,
-    profileURL: z.string().min(1).url("Invalid URL").optional(),
 });
 
 export const forgotPassword = z.object({

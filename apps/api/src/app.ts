@@ -27,6 +27,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+
 app.use('/user', authRoutes);
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });

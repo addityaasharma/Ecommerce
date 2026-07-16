@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { registerUserService, userLoginService, userPasswordService, verifyOtpService } from './user.service.js';
+import { registerUserByGoogleService, registerUserService, userLoginService, userPasswordService, verifyOtpService } from './user.service.js';
 import { generateAccessToken, generateRefreshToken } from '../../common/helper/token.js';
 
 export const registerController = async (req: Request, res: Response) => {
@@ -9,6 +9,18 @@ export const registerController = async (req: Request, res: Response) => {
             success: true,
             data: user,
         })
+    } catch (err: any) {
+        return res.status(err.statusCode ?? 500).json({
+            success: false,
+            message: err.message ?? 'Something went wrong'
+        })
+    }
+}
+
+export const registerGoogleController = async (req: Request, res: Response) => {
+    try {
+        const { user, token } = await registerUserByGoogleService(req.body);
+        return res.status(201).json({ success: true, data: user, token });
     } catch (err: any) {
         return res.status(err.statusCode ?? 500).json({
             success: false,
