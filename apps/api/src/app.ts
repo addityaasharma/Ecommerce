@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import authRoutes from './modules/user/user.routes.js';
 
-const app : Express= express();
+const app: Express = express();
 
 app.use(helmet());
 app.use(
