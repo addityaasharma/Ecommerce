@@ -1,7 +1,7 @@
 import express, { type Router } from 'express';
 import { validateSchema } from '../../middleware/schema.middleware.js';
 import { registerSchema, loginSchema, googleAuth, forgotPassword, resetPassword } from "@repo/validators"
-import { passwordController, registerController, registerGoogleController, userLoginController, verifyOTPController } from './user.controller.js';
+import { passwordController, registerController, registerGoogleController, userLoginController, userLoginGoogleController, verifyOTPController } from './user.controller.js';
 
 const router: Router = express.Router();
 

@@ -4,10 +4,7 @@ import { prisma } from "@repo/db";
 import { AppError } from "../../common/error/appError.js";
 import { generateOTP, OTP_EXPIRE } from "../../common/helper/otpFunction.js";
 import { redis } from "../../config/redis.js";
-import jwt from 'jsonwebtoken';
-import { ACCESS_SECRET, REFRESH_SECRET } from "../../common/constants/tokens.js";
 import { verifyGoogleToken } from "../../common/helper/googleVerify.js";
-import { access, appendFile, link } from "node:fs";
 import { generateAccessToken, generateRefreshToken } from "../../common/helper/token.js";
 
 export const registerUserService = async (input: RegisterInput) => {
@@ -37,7 +34,7 @@ export const registerUserByGoogleService = async (input: GoogleInput) => {
     const { googleId, username, email, profileURL } = await verifyGoogleToken(input.googleId);
     const existing_user = await prisma.user.findFirst({
         where: {
-            OR: [{ googleId, email }]
+            OR: [{ googleId }, { email }]
         }
     })
 
@@ -64,6 +61,7 @@ export const registerUserByGoogleService = async (input: GoogleInput) => {
     return { user: safeUser, token: { access: access_token, refresh: refresh_token } };
 }
 
+
 export const userLoginService = async (input: LoginInput) => {
     const user = await prisma.user.findFirst({
         where: {
@@ -83,6 +81,31 @@ export const userLoginService = async (input: LoginInput) => {
     return safeUser;
 }
 
+export const userGoogleLoginService = async (input: GoogleInput) => {
+    const { googleId, email } = await verifyGoogleToken(input.googleId);
+    const existing_user = await prisma.user.findFirst({
+        where: {
+            OR: [{ googleId }, { email }]
+        }
+    })
+
+    if (!existing_user) {
+        throw new AppError("user does not exist", 409)
+    }
+
+    let user = existing_user
+    if (!existing_user.googleId) {
+        user = await prisma.user.update({
+            where: { id: existing_user.id },
+            data: { googleId }
+        });
+    }
+
+    const { password, ...safeUser } = user;
+    const access_token = generateAccessToken(user.id);
+    const refresh_token = generateRefreshToken(user.id);
+    return { user: safeUser, token: { access: access_token, refresh: refresh_token } }
+}
 
 export const userPasswordService = async (input: ForgotPasswordInput) => {
     const user = await prisma.user.findFirst({
