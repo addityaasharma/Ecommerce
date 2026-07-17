@@ -21,6 +21,12 @@ export const categoryQuerySchema = z.object({
     sortBy: z.enum(["newest", "oldest", "name", "mostProducts"]).default("newest")
 });
 
+export const categoryIdParamSchema = z.object({
+    id: z.coerce.number().int().positive("Invalid category id"),
+});
+
+
+export type CategoryIdParam = z.output<typeof categoryIdParamSchema>;
 export type CategoryQuery = z.output<typeof categoryQuerySchema>;
 export type CategoryInput = z.output<typeof categoryValidator>;
 export type CategoryUpdateInput = z.output<typeof updateCategoryValidator>;
