@@ -32,8 +32,8 @@ export const registerGoogleController = async (req: Request, res: Response) => {
 export const userLoginController = async (req: Request, res: Response) => {
     try {
         const user = await userLoginService(req.body);
-        const access_token = generateAccessToken(user.id);
-        const refresh_token = generateRefreshToken(user.id);
+        const access_token = generateAccessToken(user.id, "user");
+        const refresh_token = generateRefreshToken(user.id, "user");
 
         res.cookie("access_token", access_token, {
             httpOnly: true,

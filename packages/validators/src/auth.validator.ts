@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const usernameField = z.string()
+export const usernameField = z.string()
     .trim()
     .toLowerCase()
     .min(3, "Username must be atleast 3 character")
@@ -12,14 +12,14 @@ const usernameField = z.string()
 
 const emailField = z.string().trim().lowercase().email("Invalid email address")
 
-const passwordField = z.string()
+export const passwordField = z.string()
     .min(8, "Password should be atleast 8 characters")
     .max(72, "character should not exceed more then 72 words")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[0-9]/, "Password must contain at least one number");
 
-const phoneNumber = z.string().trim().regex(/^[0-9]{10}$/, "Phone number must be a valid 10-digit number");
+export const phoneNumber = z.string().trim().regex(/^[0-9]{10}$/, "Phone number must be a valid 10-digit number");
 
 export const registerSchema = z.object({
     username: usernameField,

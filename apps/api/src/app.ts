@@ -4,7 +4,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import authRoutes from './modules/user/user.routes.js';
+import userRoutes from './modules/user/user.routes.js';
+import adminRoutes from './modules/admin/admin.routes.js'
 
 const app: Express = express();
 
@@ -28,7 +29,8 @@ app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.use('/user', authRoutes);
+app.use('/user', userRoutes);
+app.use('/admin', )
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });

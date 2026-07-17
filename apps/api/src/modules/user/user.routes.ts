@@ -12,4 +12,5 @@ router.post("/login/google", validateSchema(googleAuth), userLoginGoogleControll
 router.post("/password", validateSchema(forgotPassword), passwordController);
 router.post("/password/reset", validateSchema(resetPassword), verifyOTPController);
 
+
 export default router;

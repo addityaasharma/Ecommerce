@@ -45,8 +45,8 @@ export const registerUserByGoogleService = async (input: GoogleInput) => {
                 data: { googleId }
             });
             const { password, ...safeUser } = linked;
-            const access_token = generateAccessToken(linked.id);
-            const refresh_token = generateRefreshToken(linked.id);
+            const access_token = generateAccessToken(linked.id, "user");
+            const refresh_token = generateRefreshToken(linked.id, "user");
             return { user: safeUser, token: { access: access_token, refresh: refresh_token } }
         } throw new AppError("User already exists", 409)
     }
@@ -56,8 +56,8 @@ export const registerUserByGoogleService = async (input: GoogleInput) => {
     });
 
     const { password, ...safeUser } = new_user;
-    const access_token = generateAccessToken(new_user.id);
-    const refresh_token = generateRefreshToken(new_user.id);
+    const access_token = generateAccessToken(new_user.id, "user");
+    const refresh_token = generateRefreshToken(new_user.id, "user");
     return { user: safeUser, token: { access: access_token, refresh: refresh_token } };
 }
 
@@ -102,8 +102,8 @@ export const userGoogleLoginService = async (input: GoogleInput) => {
     }
 
     const { password, ...safeUser } = user;
-    const access_token = generateAccessToken(user.id);
-    const refresh_token = generateRefreshToken(user.id);
+    const access_token = generateAccessToken(user.id, "user");
+    const refresh_token = generateRefreshToken(user.id, "user");
     return { user: safeUser, token: { access: access_token, refresh: refresh_token } }
 }
 
