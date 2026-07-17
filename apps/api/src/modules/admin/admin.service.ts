@@ -101,7 +101,3 @@ export const profileUpdateService = async (input: AdminUpdateProfileInput, token
     const { password, ...safeAdmin } = admin;
     return safeAdmin;
 };
-
-
-
-
