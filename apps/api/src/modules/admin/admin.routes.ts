@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validateSchema } from "../../middleware/schema.middleware.js";
 import { adminResetPasswordSchema, adminSigninSchema, adminSignupSchema } from "@repo/validators"
-import { adminLogoutController, adminPasswordController, adminSigninController, adminSignupController } from "./admin.controller.js";
+import { adminController, adminLogoutController, adminPasswordController, adminSigninController, adminSignupController } from "./admin.controller.js";
 import { adminMiddleware } from "../../middleware/admin.middleware.js";
 
 const router: Router = Router();
