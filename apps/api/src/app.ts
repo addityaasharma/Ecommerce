@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import userRoutes from './modules/user/user.routes.js';
 import adminRoutes from './modules/admin/admin.routes.js'
 import adminCategoryRoutes from './modules/admin/category/category.routes.js'
+import adminProductRoutes from './modules/admin/product/product.routes.js'
 
 const app: Express = express();
 
@@ -33,6 +34,7 @@ app.get('/health', (_req, res) => {
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes)
 app.use('/admin/category', adminCategoryRoutes)
+app.use('/admin/product', adminCategoryRoutes)
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
