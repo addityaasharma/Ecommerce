@@ -34,7 +34,7 @@ app.get('/health', (_req, res) => {
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes)
 app.use('/admin/category', adminCategoryRoutes)
-app.use('/admin/product', adminCategoryRoutes)
+app.use('/admin/product', adminProductRoutes)
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });

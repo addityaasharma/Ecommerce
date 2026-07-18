@@ -77,7 +77,7 @@ export const productDetailService = async ({ page, limit, search, sortBy, status
             orderBy,
             include: {
                 category: { select: { id: true, name: true } },
-                vendor: { select: { id: true, username: true } },
+                vendor: { select: { id: true, storeName: true, isActive: true } },
             },
         }),
         prisma.products.count({ where }),
